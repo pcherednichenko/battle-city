@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  battle-city:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: battle-city-game
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    networks:
+      - battle-city-network
+
+networks:
+  battle-city-network:
+    driver: bridge
