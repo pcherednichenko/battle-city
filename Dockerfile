@@ -1,5 +1,5 @@
 # Build stage
-FROM node:12-alpine as builder
+FROM node:20-alpine as builder
 
 WORKDIR /app
 
@@ -24,8 +24,8 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 # Copy nginx configuration (optional, uses default if not provided)
 # COPY nginx.conf /etc/nginx/nginx.conf
 
-# Expose port 80
-EXPOSE 80
+EXPOSE 80 443
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]

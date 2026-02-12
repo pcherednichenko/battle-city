@@ -1,11 +1,11 @@
 version: '3.8'
 
 services:
-  battle-city:
+  battlecity:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: battle-city-game
+    container_name: battlecity
     ports:
       - "8080:80"
     restart: unless-stopped

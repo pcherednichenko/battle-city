@@ -1,0 +1,31 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Create nginx config from secret
+        run: |
+          mkdir -p nginx
+          echo "${{ secrets.NGINX_CONFIG }}" > nginx/nginx.conf
+
+      - name: Auth to Registry
+        run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_KEY }} ${{ secrets.DOCKER_REGISTRY }}
+
+      - name: Build Application Docker Image
+        run: docker build -t ${{ secrets.DOCKER_REGISTRY }}/battlecity:latest -t ${{ secrets.DOCKER_REGISTRY }}/battlecity:production-${{ github.sha }} .
+
+      - name: Push general image to registry
+        run: docker push ${{ secrets.DOCKER_REGISTRY }}/battlecity:production-${{ github.sha }}
+
+      - name: Push latest image to registry
+        run: docker push ${{ secrets.DOCKER_REGISTRY }}/battlecity:latest
