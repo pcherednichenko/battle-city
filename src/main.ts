@@ -30,11 +30,11 @@ import { GameSceneRouter, GameSceneType } from './scenes';
 
 import * as config from './config';
 
-import * as audioManifest from '../data/audio.manifest.json';
-import * as spriteManifest from '../data/sprite.manifest.json';
-import * as spriteFontConfig from '../data/fonts/sprite-font.json';
-import * as rectFontConfig from '../data/fonts/rect-font.json';
-import * as mapManifest from '../data/map.manifest.json';
+import audioManifest from '../data/audio.manifest.json';
+import spriteManifest from '../data/sprite.manifest.json';
+import spriteFontConfig from '../data/fonts/sprite-font.json';
+import rectFontConfig from '../data/fonts/rect-font.json';
+import mapManifest from '../data/map.manifest.json';
 
 const loadingElement = document.querySelector('[data-loading]');
 
