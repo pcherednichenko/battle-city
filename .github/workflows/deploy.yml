@@ -11,21 +11,31 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Create nginx config from secret
         run: |
           mkdir -p nginx
           echo "${{ secrets.NGINX_CONFIG }}" > nginx/nginx.conf
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Auth to Registry
-        run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_KEY }} ${{ secrets.DOCKER_REGISTRY }}
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_KEY }}
 
-      - name: Build Application Docker Image
-        run: docker build -t ${{ secrets.DOCKER_REGISTRY }}/battlecity:latest -t ${{ secrets.DOCKER_REGISTRY }}/battlecity:production-${{ github.sha }} .
-
-      - name: Push general image to registry
-        run: docker push ${{ secrets.DOCKER_REGISTRY }}/battlecity:production-${{ github.sha }}
-
-      - name: Push latest image to registry
-        run: docker push ${{ secrets.DOCKER_REGISTRY }}/battlecity:latest
+      - name: Build and Push Multi-Platform Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64/v8
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_REGISTRY }}/battlecity:latest
+            ${{ secrets.DOCKER_REGISTRY }}/battlecity:production-${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
