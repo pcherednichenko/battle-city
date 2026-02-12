@@ -1,5 +1,5 @@
 # Build stage
-FROM --platform=linux/amd64 node:20-alpine as builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
@@ -16,7 +16,7 @@ COPY . .
 RUN npm run build:prod
 
 # Production stage
-FROM --platform=linux/amd64 nginx:alpine
+FROM nginx:alpine
 
 # Copy built files from builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
